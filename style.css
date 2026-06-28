@@ -331,7 +331,7 @@ label {
 .map-overlay-panel {
   position: absolute;
   top: 15px;
-  right: 15px;
+  right: 70px;
   z-index: 1000;
   background: var(--bg-sidebar);
   backdrop-filter: blur(12px) saturate(180%);
