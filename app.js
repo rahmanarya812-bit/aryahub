@@ -18,6 +18,9 @@ const CATEGORIES = {
   food: { icon: 'fa-utensils', color: '#f97316', label: 'Kuliner' },
   hotel: { icon: 'fa-hotel', color: '#0ea5e9', label: 'Hotel' },
   nature: { icon: 'fa-tree', color: '#0d9488', label: 'Alam' },
+  home: { icon: 'fa-house', color: '#f43f5e', label: 'Rumah' },
+  school: { icon: 'fa-school', color: '#eab308', label: 'Sekolah' },
+  office: { icon: 'fa-building', color: '#64748b', label: 'Kantor' },
   custom: { icon: 'fa-location-dot', color: '#a855f7', label: 'Lainnya' }
 };
 

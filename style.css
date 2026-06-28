@@ -20,6 +20,9 @@
   --color-food: #f97316;     /* Orange */
   --color-hotel: #0ea5e9;    /* Sky Blue */
   --color-nature: #0d9488;   /* Teal */
+  --color-home: #f43f5e;     /* Rose Pink */
+  --color-school: #eab308;   /* Yellow/Gold */
+  --color-office: #64748b;   /* Slate/Gray */
   --color-custom: #a855f7;   /* Purple */
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -254,6 +257,9 @@ label {
 .badge-food { background: rgba(249, 115, 22, 0.15); color: var(--color-food); border: 1px solid rgba(249, 115, 22, 0.3); }
 .badge-hotel { background: rgba(14, 165, 233, 0.15); color: var(--color-hotel); border: 1px solid rgba(14, 165, 233, 0.3); }
 .badge-nature { background: rgba(13, 148, 136, 0.15); color: var(--color-nature); border: 1px solid rgba(13, 148, 136, 0.3); }
+.badge-home { background: rgba(244, 63, 94, 0.15); color: var(--color-home); border: 1px solid rgba(244, 63, 94, 0.3); }
+.badge-school { background: rgba(234, 179, 8, 0.15); color: var(--color-school); border: 1px solid rgba(234, 179, 8, 0.3); }
+.badge-office { background: rgba(100, 116, 139, 0.15); color: var(--color-office); border: 1px solid rgba(100, 116, 139, 0.3); }
 .badge-custom { background: rgba(168, 85, 247, 0.15); color: var(--color-custom); border: 1px solid rgba(168, 85, 247, 0.3); }
 
 /* Saved Locations Items */
