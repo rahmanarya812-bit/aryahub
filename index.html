@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AryaHub - Peta Interaktif & Manajemen Lokasi</title>
+  
+  <!-- CSS Dependencies -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <h5>AryaHub</h5>
+        </div>
+        <button class="action-btn d-md-none" onclick="toggleSidebar()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        
+        <!-- Search Panel -->
+        <div class="glass-panel">
+          <label><i class="fa-solid fa-magnifying-glass-location me-1"></i> CARI ALAMAT / LOKASI</label>
+          <div class="input-group mb-2">
+            <input type="text" id="search-input" class="form-control" placeholder="Contoh: Monas, Jakarta...">
+            <button class="btn btn-primary" onclick="searchAddress()" title="Cari Lokasi">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <button class="btn btn-secondary w-100 btn-sm d-flex align-items-center justify-content-center gap-2" onclick="getCurrentLocation()">
+            <i class="fa-solid fa-location-crosshairs"></i> Temukan Lokasi Saya
+          </button>
+        </div>
+
+        <!-- Add Location Form -->
+        <div class="glass-panel">
+          <label><i class="fa-solid fa-square-plus me-1"></i> TAMBAH LOKASI BARU</label>
+          <form id="add-location-form" onsubmit="saveNewLocation(event)">
+            <div class="mb-2">
+              <input type="text" id="location-name" class="form-control" placeholder="Nama Lokasi" required>
+            </div>
+            
+            <div class="mb-2">
+              <select id="location-category" class="form-select" required>
+                <option value="" disabled selected>Pilih Kategori</option>
+                <option value="tourism">🏛️ Wisata / Landmark</option>
+                <option value="food">🍔 Kuliner</option>
+                <option value="hotel">🏨 Penginapan</option>
+                <option value="nature">🌲 Alam / Gunung</option>
+                <option value="custom">📍 Lainnya</option>
+              </select>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <input type="number" step="any" id="location-lat" class="form-control form-control-sm" placeholder="Latitude" required>
+              </div>
+              <div class="col-6">
+                <input type="number" step="any" id="location-lng" class="form-control form-control-sm" placeholder="Longitude" required>
+              </div>
+            </div>
+            
+            <div class="mb-2">
+              <textarea id="location-desc" class="form-control" rows="2" placeholder="Deskripsi atau keterangan lokasi..."></textarea>
+            </div>
+            
+            <div class="text-muted mb-2" style="font-size: 0.75rem; line-height: 1.2;">
+              <i class="fa-solid fa-circle-info me-1"></i> 
+              Tips: Klik area mana saja pada peta untuk mengisi koordinat secara otomatis!
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-sm">
+              <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Lokasi
+            </button>
+          </form>
+        </div>
+
+        <!-- Saved Locations List -->
+        <div class="glass-panel mb-0" style="flex: 1;">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="m-0"><i class="fa-solid fa-list-ul me-1"></i> DAFTAR LOKASI</label>
+            <span id="locations-count" class="badge bg-secondary">0</span>
+          </div>
+
+          <!-- Sidebar Filter and Search -->
+          <div class="row g-2 mb-3">
+            <div class="col-7">
+              <input type="text" id="list-search" class="form-control form-control-sm" placeholder="Cari di daftar..." oninput="filterLocations()">
+            </div>
+            <div class="col-5">
+              <select id="list-filter-category" class="form-select form-select-sm" onchange="filterLocations()">
+                <option value="all">Semua</option>
+                <option value="tourism">Wisata</option>
+                <option value="food">Kuliner</option>
+                <option value="hotel">Hotel</option>
+                <option value="nature">Alam</option>
+                <option value="custom">Lainnya</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="locations-list" style="max-height: 250px; overflow-y: auto;">
+            <!-- Dinamis via JS -->
+            <div class="empty-state">
+              <i class="fa-regular fa-map"></i>
+              <p>Belum ada lokasi disimpan. Klik pada peta untuk menambahkan!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar Footer / Tools -->
+      <div class="sidebar-footer">
+        <div class="d-flex gap-2">
+          <button class="btn btn-secondary w-50 btn-sm d-flex align-items-center justify-content-center gap-1" onclick="exportData()" title="Ekspor JSON">
+            <i class="fa-solid fa-file-export"></i> Ekspor
+          </button>
+          <button class="btn btn-secondary w-50 btn-sm d-flex align-items-center justify-content-center gap-1" onclick="triggerImport()" title="Impor JSON">
+            <i class="fa-solid fa-file-import"></i> Impor
+          </button>
+        </div>
+        <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
+        <button class="btn btn-outline-danger w-100 btn-sm mt-2 d-flex align-items-center justify-content-center gap-1" onclick="clearAllLocations()">
+          <i class="fa-solid fa-trash-can"></i> Hapus Semua Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Toggle Button Sidebar -->
+    <button id="toggle-sidebar-btn" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Sembunyikan/Tampilkan Sidebar">
+      <i class="fa-solid fa-chevron-left" id="toggle-icon"></i>
+    </button>
+
+    <!-- Map Area -->
+    <div class="map-container-wrap">
+      
+      <!-- Top Right Floating Panel -->
+      <div class="map-overlay-panel">
+        <button id="toggle-drag" class="btn btn-sm btn-success d-flex align-items-center gap-1">
+          <i class="fa-solid fa-arrows-up-down-left-right"></i> Geser Peta: ON
+        </button>
+        <button id="toggle-measure" class="btn btn-sm btn-secondary d-flex align-items-center gap-1">
+          <i class="fa-solid fa-ruler-combined"></i> Ukur Jarak: OFF
+        </button>
+        <button id="clear-measure" class="btn btn-sm btn-outline-danger d-flex align-items-center" style="display: none;" title="Hapus garis pengukuran">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Realtime Coordinates display -->
+      <div id="coords-indicator" class="map-coords-indicator">
+        <i class="fa-solid fa-compass fa-spin me-1 text-primary"></i> Lat: - , Lng: -
+      </div>
+
+      <!-- Map Div -->
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+  <!-- Edit Location Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Edit Detail Lokasi</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="edit-location-form" onsubmit="saveEditedLocation(event)">
+          <div class="modal-body">
+            <input type="hidden" id="edit-location-id">
+            
+            <div class="mb-3">
+              <label for="edit-location-name">Nama Lokasi</label>
+              <input type="text" id="edit-location-name" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="edit-location-category">Kategori</label>
+              <select id="edit-location-category" class="form-select" required>
+                <option value="tourism">🏛️ Wisata / Landmark</option>
+                <option value="food">🍔 Kuliner</option>
+                <option value="hotel">🏨 Penginapan</option>
+                <option value="nature">🌲 Alam / Gunung</option>
+                <option value="custom">📍 Lainnya</option>
+              </select>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="edit-location-lat">Latitude</label>
+                <input type="number" step="any" id="edit-location-lat" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label for="edit-location-lng">Longitude</label>
+                <input type="number" step="any" id="edit-location-lng" class="form-control" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="edit-location-desc">Deskripsi</label>
+              <textarea id="edit-location-desc" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert Toast Container -->
+  <div id="toast-container" class="toast-container-custom"></div>
+
+  <!-- JS Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
