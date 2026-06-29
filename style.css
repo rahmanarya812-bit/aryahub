@@ -555,3 +555,52 @@ label {
   font-size: 0.85rem;
   margin: 0;
 }
+
+/* Custom Dark Glassmorphism for Leaflet Map Controls */
+.leaflet-bar, 
+.leaflet-control-layers, 
+.leaflet-control-rotate {
+  background-color: var(--bg-sidebar) !important;
+  border: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--text-main) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+}
+
+/* Align map controls nicely with right margin */
+.leaflet-top.leaflet-right .leaflet-control {
+  margin-right: 15px !important;
+}
+
+.leaflet-bar a, 
+.leaflet-control-layers-toggle,
+.leaflet-control-rotate-toggle {
+  background-color: transparent !important;
+  color: var(--text-main) !important;
+  border: none !important;
+  transition: var(--transition);
+}
+
+.leaflet-bar a:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-highlight) !important;
+}
+
+/* Invert default Leaflet black icons to white to match dark theme dashboard */
+.leaflet-bar a, 
+.leaflet-control-layers-toggle, 
+.leaflet-control-rotate-toggle {
+  filter: invert(1) brightness(2) !important;
+}
+
+.leaflet-control-layers {
+  padding: 6px;
+}
+
+.leaflet-control-layers-list {
+  color: var(--text-main) !important;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+}
