@@ -59,7 +59,13 @@ function initMap() {
     center: [-2.5489, 118.0149], // Center of Indonesia
     zoom: 5,
     layers: [cartoDbDark], // Default layer set to sleek dark mode
-    zoomControl: false // We'll add zoom control at a custom position
+    zoomControl: false, // We'll add zoom control at a custom position
+    rotate: true, // Enable map rotation capability
+    rotateControl: {
+      position: 'topright', // Align compass button in the top-right stack
+      closeOnZeroBearing: false // Keep the compass visible even when facing north
+    },
+    bearing: 0 // Start facing North
   });
 
   // Add zoom control to top-right
