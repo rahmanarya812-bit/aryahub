@@ -44,6 +44,11 @@ function initMap() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   });
 
+  const cartoDbVoyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 20,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  });
+
   const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
@@ -53,7 +58,7 @@ function initMap() {
   map = L.map('map', {
     center: [-2.5489, 118.0149], // Center of Indonesia
     zoom: 5,
-    layers: [osmStandard], // Default layer
+    layers: [cartoDbDark], // Default layer set to sleek dark mode
     zoomControl: false // We'll add zoom control at a custom position
   });
 
@@ -62,8 +67,9 @@ function initMap() {
 
   // Group base layers
   const baseMaps = {
+    "🌙 Modern Dark": cartoDbDark,
+    "🎨 Modern Light": cartoDbVoyager,
     "🗺️ Standard Map": osmStandard,
-    "🌙 Dark Mode": cartoDbDark,
     "🛰️ Satellite Map": esriSatellite
   };
 
