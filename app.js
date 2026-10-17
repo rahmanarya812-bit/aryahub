@@ -577,14 +577,14 @@ function addMeasurePoint(latlng) {
     color: '#6366f1',
     fillColor: '#fff',
     fillOpacity: 1,
-    weight: 3,
-    radius: 6,
+    weight: 3.5,
+    radius: 7,
     pane: 'popupPane'
   }).addTo(map);
   
   measureMarkers.push(cMarker);
   
-  // 2. Draw connecting lines
+  // 2. Draw connecting lines with thicker weight
   if (measurePoints.length > 1) {
     const lastIdx = measurePoints.length - 1;
     const from = measurePoints[lastIdx - 1];
@@ -594,31 +594,16 @@ function addMeasurePoint(latlng) {
     const dist = from.distanceTo(to); // in meters
     measureTotalDistance += dist;
     
-    // Draw polyline
+    // Draw polyline with bold/thicker stroke
     const line = L.polyline([from, to], {
       color: '#6366f1',
-      weight: 4,
-      dashArray: '5, 8'
+      weight: 8,
+      dashArray: '6, 8',
+      opacity: 0.95
     }).addTo(map);
     
     measureLines.push(line);
   }
-  
-  // 3. Add Cumulative Tooltip to node
-  let label = '';
-  if (measurePoints.length === 1) {
-    label = 'Awal';
-  } else {
-    const km = measureTotalDistance / 1000;
-    label = km >= 1 ? `${km.toFixed(2)} km` : `${measureTotalDistance.toFixed(0)} m`;
-  }
-  
-  cMarker.bindTooltip(label, {
-    permanent: true,
-    direction: 'top',
-    className: 'measurement-tooltip',
-    offset: [0, -8]
-  }).openTooltip();
 }
 
 function resetMeasurement() {

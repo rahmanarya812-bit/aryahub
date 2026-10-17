@@ -467,13 +467,7 @@ label {
 
 /* Measurement indicator styling */
 .measurement-tooltip {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.75rem;
-  border-radius: 4px;
-  padding: 2px 6px;
+  display: none !important;
 }
 
 /* Toast Notification */
